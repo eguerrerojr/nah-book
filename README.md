@@ -1,4 +1,4 @@
 # nah-book
 First try repository on GitHub
 
-I love :coffe.
+I love :coffee:.
