@@ -18,18 +18,24 @@ var functions = template.FuncMap{}
 var app *config.AppConfig
 var pathToTemplates = "./views"
 
+//NewRenderer sets the config for the template package
 func NewRenderer(a *config.AppConfig) {
 	app = a
 }
 
+//AddDefaultData adds data for all templates
 func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
 	td.Flash = app.Session.PopString(r.Context(), "flash")
 	td.Error = app.Session.PopString(r.Context(), "error")
 	td.Warning = app.Session.PopString(r.Context(), "warning")
 	td.CSRFToken = nosurf.Token(r)
+	if app.Session.Exists(r.Context(), "user_id") {
+		td.IsAuthenticated = 1
+	}
 	return td
 }
 
+//Template renders templates using html/templates
 func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
 	var tc map[string]*template.Template
 	if app.UseCache {
