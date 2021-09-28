@@ -36,7 +36,7 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Get("/make-reservations", handlers.Repo.Reservation)
 	mux.Post("/make-reservations", handlers.Repo.PostReservation)
 
-	mux.Get("/login", handlers.Repo.ShowLogin)
+	mux.Get("/user/login", handlers.Repo.ShowLogin)
 
 	fileServer := http.FileServer(http.Dir("./assets/"))
 	mux.Handle("/assets/*", http.StripPrefix("/assets", fileServer))
