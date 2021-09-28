@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <h2>Login</h2>
 
-            <form method="post" action="/user/login">
+            <form method="post" action="/user/login" novalidate>
                 <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
                     <div class="form-group mt-3">
                             <label for="email">Email:</label>
