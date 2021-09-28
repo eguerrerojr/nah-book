@@ -248,36 +248,36 @@ func (m *postgresDBRepo) AllReservations() ([]models.Reservation, error) {
 		order by r.start_date asc
 `
 	rows, err := m.DB.QueryContext(ctx, query)
-	if err != nil{
+	if err != nil {
 		return reservations, err
 	}
 
-	for rows.Next(){
+	for rows.Next() {
 		var i models.Reservation
 		err := rows.Scan(
-		&i.ID,	
-		&i.FirstName,
-		&i.LastName,
-		&i.Email,
-		&i.Phone,
-		&i.StartDate,
-		&i.EndDate,
-		&i.RoomID,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.Room.ID,
-		&i.Room.RoomName,
+			&i.ID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.StartDate,
+			&i.EndDate,
+			&i.RoomID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Room.ID,
+			&i.Room.RoomName,
 		)
-		
+
 		if err != nil {
 			return reservations, err
 		}
-	
+
 		reservations = append(reservations, i)
 
 	}
 
-	if err = rows.Err(); err !=nil{
+	if err = rows.Err(); err != nil {
 		return reservations, err
 	}
 
