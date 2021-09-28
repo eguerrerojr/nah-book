@@ -12,7 +12,7 @@ require (
 	github.com/justinas/nosurf v1.1.1
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/xhit/go-simple-mail/v2 v2.10.0
-	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
+	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
