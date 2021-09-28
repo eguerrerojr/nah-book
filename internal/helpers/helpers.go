@@ -2,9 +2,10 @@ package helpers
 
 import (
 	"fmt"
-	"github.com/71anshuman/go-bookings/internal/config"
 	"net/http"
 	"runtime/debug"
+
+	"github.com/eguerrerojr/nah-book/internal/config"
 )
 
 var app *config.AppConfig

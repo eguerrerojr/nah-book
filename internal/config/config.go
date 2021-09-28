@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"log"
 
-	"github.com/71anshuman/go-bookings/internal/models"
 	"github.com/alexedwards/scs/v2"
+	"github.com/eguerrerojr/nah-book/internal/models"
 )
 
 type AppConfig struct {

@@ -9,14 +9,14 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/71anshuman/go-bookings/internal/driver"
-	"github.com/71anshuman/go-bookings/internal/helpers"
+	"github.com/eguerrerojr/nah-book/internal/driver"
+	"github.com/eguerrerojr/nah-book/internal/helpers"
 
-	"github.com/71anshuman/go-bookings/internal/config"
-	"github.com/71anshuman/go-bookings/internal/handlers"
-	"github.com/71anshuman/go-bookings/internal/models"
-	"github.com/71anshuman/go-bookings/internal/render"
 	"github.com/alexedwards/scs/v2"
+	"github.com/eguerrerojr/nah-book/internal/config"
+	"github.com/eguerrerojr/nah-book/internal/handlers"
+	"github.com/eguerrerojr/nah-book/internal/models"
+	"github.com/eguerrerojr/nah-book/internal/render"
 )
 
 const port = ":8080"
@@ -93,7 +93,7 @@ func run() (*driver.DB, error) {
 
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
-		log.Fatal("Cannot creat template cache")
+		log.Fatal("Cannot create template cache")
 		return nil, err
 	}
 

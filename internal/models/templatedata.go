@@ -1,6 +1,6 @@
 package models
 
-import "github.com/71anshuman/go-bookings/internal/forms"
+import "github.com/eguerrerojr/nah-book/internal/forms"
 
 type TemplateData struct {
 	StringMap map[string]string
@@ -11,5 +11,5 @@ type TemplateData struct {
 	Flash     string
 	Warning   string
 	Error     string
-	Form *forms.Form
+	Form      *forms.Form
 }

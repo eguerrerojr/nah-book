@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/71anshuman/go-bookings/internal/config"
-	"github.com/71anshuman/go-bookings/internal/models"
-	"github.com/71anshuman/go-bookings/internal/render"
 	"github.com/alexedwards/scs/v2"
+	"github.com/eguerrerojr/nah-book/internal/config"
+	"github.com/eguerrerojr/nah-book/internal/models"
+	"github.com/eguerrerojr/nah-book/internal/render"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/justinas/nosurf"

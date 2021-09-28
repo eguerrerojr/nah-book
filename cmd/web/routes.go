@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 
-	"github.com/71anshuman/go-bookings/internal/config"
-	"github.com/71anshuman/go-bookings/internal/handlers"
+	"github.com/eguerrerojr/nah-book/internal/config"
+	"github.com/eguerrerojr/nah-book/internal/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -35,6 +35,8 @@ func routes(app *config.AppConfig) http.Handler {
 
 	mux.Get("/make-reservations", handlers.Repo.Reservation)
 	mux.Post("/make-reservations", handlers.Repo.PostReservation)
+
+	mux.Get("/login", handlers.Repo.ShowLogin)
 
 	fileServer := http.FileServer(http.Dir("./assets/"))
 	mux.Handle("/assets/*", http.StripPrefix("/assets", fileServer))

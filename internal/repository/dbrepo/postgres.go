@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/71anshuman/go-bookings/internal/models"
+	"github.com/eguerrerojr/nah-book/internal/models"
 )
 
 func (m *postgresDBRepo) AllUsers() bool {
@@ -109,7 +109,7 @@ func (m *postgresDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]
 	if err != nil {
 		return []models.Room{}, err
 	}
-	
+
 	for rows.Next() {
 		var room models.Room
 		err = rows.Scan(&room.ID, &room.RoomName)
@@ -118,7 +118,7 @@ func (m *postgresDBRepo) SearchAvailabilityForAllRooms(start, end time.Time) ([]
 		}
 		rooms = append(rooms, room)
 	}
-	
+
 	if err = rows.Err(); err != nil {
 		return rooms, err
 	}

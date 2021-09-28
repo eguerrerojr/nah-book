@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/71anshuman/go-bookings/internal/config"
+	"github.com/eguerrerojr/nah-book/internal/config"
 	"github.com/go-chi/chi/v5"
 )
 

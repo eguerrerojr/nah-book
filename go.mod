@@ -1,5 +1,4 @@
-module github.com/71anshuman/go-bookings
-
+module github.com/eguerrerojr/nah-book
 go 1.16
 
 require (
