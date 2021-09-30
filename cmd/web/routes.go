@@ -40,12 +40,11 @@ func routes(app *config.AppConfig) http.Handler {
 	mux.Post("/user/login", handlers.Repo.PostShowLogin)
 	mux.Get("/user/logout", handlers.Repo.Logout)
 
-
 	fileServer := http.FileServer(http.Dir("./assets/"))
 	mux.Handle("/assets/*", http.StripPrefix("/assets", fileServer))
 
-	mux.Route("/admin", func(mux chi.Router){
-		mux.Use(Auth)
+	mux.Route("/admin", func(mux chi.Router) {
+		//mux.Use(Auth)
 		mux.Get("/dashboard", handlers.Repo.AdminDashBoard)
 
 		mux.Get("/reservations-new", handlers.Repo.AdminNewReservations)

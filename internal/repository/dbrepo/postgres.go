@@ -240,7 +240,7 @@ func (m *postgresDBRepo) AllReservations() ([]models.Reservation, error) {
 	var reservations []models.Reservation
 
 	query := `
-		select r.id, r.first_name, r.last_name, r.email, r.phone, r.start_date
+		select r.id, r.first_name, r.last_name, r.email, r.phone, r.start_date,
 		r.end_date, r.room_id, r.created_at, r.updated_at,
 		rm.id, rm.room_name
 		from reservations r
@@ -251,6 +251,7 @@ func (m *postgresDBRepo) AllReservations() ([]models.Reservation, error) {
 	if err != nil {
 		return reservations, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		var i models.Reservation
