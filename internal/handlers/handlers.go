@@ -587,11 +587,14 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 
 	now := time.Now()
 
-	if r.URL.Query().Get("y") != ""{
-		year, _ :=strconv.Atoi(r.URL.Query().Get("y"))
-		month, _ :=strconv.Atoi(r.URL.Query().Get("m"))
+	if r.URL.Query().Get("y") != "" {
+		year, _ := strconv.Atoi(r.URL.Query().Get("y"))
+		month, _ := strconv.Atoi(r.URL.Query().Get("m"))
 		now = time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.UTC)
 	}
+
+	data := make(map[string]interface{})
+	data["now"] = now
 
 	next := now.AddDate(0, 1, 0)
 	last := now.AddDate(0, -1, 0)
@@ -610,9 +613,27 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	stringMap["this_month"] = now.Format("01")
 	stringMap["this_month_year"] = now.Format("2006")
 
+	//get teh first and last days of the month
+	currentYear, currentMonth, _ := now.Date()
+	currentLocation := now.Location()
+	firstOfMonth := time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, currentLocation)
+	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
+
+	intMap := make(map[string]int)
+	intMap["days_in_month"] = lastOfMonth.Day()
+
+	rooms, err := m.DB.AllRooms()
+	if err != nil{
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data["rooms"] = rooms
 
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
-	StringMap: stringMap,	
+		StringMap: stringMap,
+		Data:      data,
+		IntMap:    intMap,
 	})
 }
 
