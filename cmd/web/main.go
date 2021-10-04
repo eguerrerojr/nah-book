@@ -38,8 +38,6 @@ func main() {
 	fmt.Println("Starting mail listener...")
 	listenForMail()
 
-
-
 	srv := &http.Server{
 		Addr:    port,
 		Handler: routes(&app),
@@ -63,6 +61,7 @@ func run() (*driver.DB, error) {
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+	gob.Register(map[string]int{})
 
 	mailChan := make(chan models.MailData)
 	app.MailChan = mailChan
