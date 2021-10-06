@@ -46,6 +46,7 @@ func NewHandler(r *Repository) {
 	Repo = r
 }
 
+//Home is the home page handler
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 	render.Template(w, r, "home.page.tmpl", &models.TemplateData{})
 }
@@ -601,6 +602,7 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 
 	nextMonth := next.Format("01")
 	nextMonthYear := next.Format("2006")
+
 	lastMonth := last.Format("01")
 	lastMonthYear := last.Format("2006")
 
@@ -694,7 +696,7 @@ func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 //AdminPostReservationsCalendar handles post of reservation calendar
 func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
-	if err != nil{
+	if err != nil {
 		helpers.ServerError(w, err)
 		return
 	}
@@ -702,11 +704,50 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 	year, _ := strconv.Atoi(r.Form.Get("y"))
 	month, _ := strconv.Atoi(r.Form.Get("m"))
 
+	//process blocks
 
+	rooms, err := m.DB.AllRooms()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
 
+	form := forms.New(r.PostForm)
+	for _, x := range rooms {
+		//Get the block map from the session. Loop through entire map, if we have an entry in the map
+		//that does not exist in our posted data, and if restriction > 0, then it is a map we need to
+		//remove.
+		//	curMap := m.App.Session.Get(r.Context(), fmt.Sprintf("block_map_%d", x.ID)).(map[string]int)
+		curMap := m.App.Session.Get(r.Context(), fmt.Sprintf("block_map_%d", x.ID)).(map[string] int)
 
-	m.App.Session.Put(r.Context(),"flash", "Changes saved")
+		for name, value := range curMap {
+			// ok will be false if the value is not in the map
+			//	if val, ok := curMap[name]; ok {
+			if val, ok := curMap[name]; ok {
+				// only pay attention to the values greater than zero and that are not in the form post
+				// the rest are just placeholders for days without blocks
+				if val > 0 {
+					if !form.Has(fmt.Sprintf("remove_block_%d_%s", x.ID, name)) {
+						// delete the restriction by ID
+						log.Println("would delete block", value)
+					}
+				}
+			}
+		}
+
+	}
+
+	// now handle new blocks
+	for name, _ := range r.PostForm {
+		if strings.HasPrefix(name, "add_block") {
+			exploded := strings.Split(name, "_")
+			roomID, _ := strconv.Atoi(exploded[2])
+			// insert a new block
+			log.Println("Would insert block for room id", roomID, "for date", exploded[3])
+		}
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "Changes saved")
 	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%d&m=%d", year, month), http.StatusSeeOther)
-
 
 }
