@@ -651,19 +651,19 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 
 		for _, y := range restrictions {
 			if y.ReservationID > 0 {
-				//its a reservation
+				// it's a reservation
 				for d := y.StartDate; d.After(y.EndDate) == false; d = d.AddDate(0, 0, 1) {
 					reservationMap[d.Format("2006-01-2")] = y.ReservationID
 				}
 			} else {
-				//its a block
+				// it's a block
 				blockMap[y.StartDate.Format("2006-01-2")] = y.ID
 			}
 		}
 		data[fmt.Sprintf("reservation_map_%d", x.ID)] = reservationMap
 		data[fmt.Sprintf("block_map_%d", x.ID)] = blockMap
 
-		m.App.Session.Put(r.Context(), fmt.Sprintf("block_map_%d, x.ID"), blockMap)
+		m.App.Session.Put(r.Context(), fmt.Sprintf("block_map_%d", x.ID), blockMap)
 	}
 
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
@@ -713,37 +713,41 @@ func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *htt
 	}
 
 	form := forms.New(r.PostForm)
+
 	for _, x := range rooms {
 		//Get the block map from the session. Loop through entire map, if we have an entry in the map
 		//that does not exist in our posted data, and if restriction > 0, then it is a map we need to
 		//remove.
-		//	curMap := m.App.Session.Get(r.Context(), fmt.Sprintf("block_map_%d", x.ID)).(map[string]int)
-		curMap := m.App.Session.Get(r.Context(), fmt.Sprintf("block_map_%d", x.ID)).(map[string] int)
-
+		curMap := m.App.Session.Get(r.Context(), fmt.Sprintf("block_map_%d", x.ID)).(map[string]int)
 		for name, value := range curMap {
 			// ok will be false if the value is not in the map
-			//	if val, ok := curMap[name]; ok {
 			if val, ok := curMap[name]; ok {
 				// only pay attention to the values greater than zero and that are not in the form post
 				// the rest are just placeholders for days without blocks
 				if val > 0 {
 					if !form.Has(fmt.Sprintf("remove_block_%d_%s", x.ID, name)) {
-						// delete the restriction by ID
-						log.Println("would delete block", value)
+						// delete the restriction by id
+						err := m.DB.DeleteBlockByID(value)
+						if err != nil {
+							log.Println(err)
+						}
 					}
 				}
 			}
+
 		}
-
 	}
-
 	// now handle new blocks
 	for name, _ := range r.PostForm {
 		if strings.HasPrefix(name, "add_block") {
 			exploded := strings.Split(name, "_")
 			roomID, _ := strconv.Atoi(exploded[2])
+			t, _ := time.Parse("2006-01-2", exploded[3])
 			// insert a new block
-			log.Println("Would insert block for room id", roomID, "for date", exploded[3])
+			err := m.DB.InsertBlockForRoom(roomID, t)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	}
 
