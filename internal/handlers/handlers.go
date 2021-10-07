@@ -522,6 +522,12 @@ func (m *Repository) AdminShowReservation(w http.ResponseWriter, r *http.Request
 
 	stringMap := make(map[string]string)
 	stringMap["src"] = src
+
+	year := r.URL.Query().Get("y")
+	month := r.URL.Query().Get("m")
+
+	stringMap["month"] = month
+	stringMap["year"] = year
 	// get reservation from the database
 	res, err := m.DB.GetReservationByID(id)
 	if err != nil {
@@ -559,6 +565,7 @@ func (m *Repository) AdminPostShowReservation(w http.ResponseWriter, r *http.Req
 
 	stringMap := make(map[string]string)
 	stringMap["src"] = src
+
 	// get reservation from the database
 	res, err := m.DB.GetReservationByID(id)
 	if err != nil {
@@ -577,9 +584,16 @@ func (m *Repository) AdminPostShowReservation(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	m.App.Session.Put(r.Context(), "flash", "Changes saved")
-	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-#%s", src), http.StatusSeeOther)
+	month := r.Form.Get("month")
+	year := r.Form.Get("year")
 
+	m.App.Session.Put(r.Context(), "flash", "Changes saved")
+
+	if year == "" {
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+	} else {
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%s&m=%s", year, month), http.StatusSeeOther)
+	}
 }
 
 //AdminReservationsCalendar displays the reservation calendar
@@ -677,10 +691,21 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 func (m *Repository) AdminProcessReservation(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	src := chi.URLParam(r, "src")
-	_ = m.DB.UpdateProcessedForReservation(id, 1)
-	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed")
-	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+	err := m.DB.UpdateProcessedForReservation(id, 1)
+	if err != nil {
+		log.Println(err)
+	}
 
+	year := r.URL.Query().Get("y")
+	month := r.URL.Query().Get("m")
+
+	m.App.Session.Put(r.Context(), "flash", "Reservation marked as processed")
+
+	if year == "" {
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+	} else {
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%s&m=%s", year, month), http.StatusSeeOther)
+	}
 }
 
 //AdminDeleteReservation deletes a reservation
@@ -688,9 +713,17 @@ func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	src := chi.URLParam(r, "src")
 	_ = m.DB.DeleteReservation(id)
-	m.App.Session.Put(r.Context(), "flash", "Reservation deleted")
-	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
 
+	year := r.URL.Query().Get("y")
+	month := r.URL.Query().Get("m")
+
+	m.App.Session.Put(r.Context(), "flash", "Reservation deleted")
+
+	if year == "" {
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+	} else {
+		http.Redirect(w, r, fmt.Sprintf("/admin/reservations-calendar?y=%s&m=%s", year, month), http.StatusSeeOther)
+	}
 }
 
 //AdminPostReservationsCalendar handles post of reservation calendar
