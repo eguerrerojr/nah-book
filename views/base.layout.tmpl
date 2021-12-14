@@ -17,6 +17,7 @@
       <link rel="stylesheet" type="text/css" href="/assets/css/styles.css">
 
       <style>
+        
           .btn-outline-secondary {
               color: aqua;
               border-color: #6c757d;
@@ -55,7 +56,7 @@
                 <a class="nav-link active" aria-current="page" href="/">Home</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
+                <a class="nav-link" href="/about">Abot</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -104,8 +105,12 @@
 
     <footer class="my-footer">
       <div class="row">
-        <div class="col">
-          left
+        <div class="col text-center">
+          <strong> Forth Smythe Bed &amp; Breakfast</strong><br>
+          100 Rocky Road<br>
+          Northbrook, Ontario<br>
+          Canada<br>
+          <a href="mailto:info@fsbb.ca">info@fsbb.ca</a>
         </div>
         <div class="col">
           center
@@ -162,18 +167,7 @@
             })
         }
         
-        {{with .Error}}
-            notify("{{.}}", "error")
-        {{end}}
-
-        {{with .Flash}}
-            notify("{{.}}", "success")
-        {{end}}
-
-        {{with .Warning}}
-            notify("{{.}}", "warning")
-        {{end}}
-    
+     
     </script>
     </body>
 </html>
